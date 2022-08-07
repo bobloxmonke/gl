@@ -144,7 +144,10 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* image
 
 void gl_draw_char(int16_t x, int16_t y, const char ascii_char, font_t* font, uint16_t color)
 {
-
+	if (ascii_char < 32 || ascii_char > 126)
+	{
+		return;
+	}
 }
 
 void gl_draw_text(int16_t x, int16_t y, const char* string, font_t* font, uint16_t color)
