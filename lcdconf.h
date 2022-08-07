@@ -1,7 +1,7 @@
 #ifndef __LCD_CONFIG_H__
 #define __LCD_CONFIG_H__
 
-#include "st7735.h"
+#include "st77xx.h"
 
 #define SPI_PORT        spi0
 

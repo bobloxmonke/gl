@@ -6,6 +6,16 @@
 #include <stdint.h>
 #include <string.h>
 
+// #include "utils.h"
+
+struct font_t
+{
+    uint8_t* font_data;
+
+    uint16_t width;
+    uint16_t height;
+};
+
 static uint16_t*    frame_buffer;
 static uint16_t     frame_width;
 static uint16_t     frame_height;
@@ -129,6 +139,35 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* image
 		}
 	}
 }
+
+// TODO: implement a font stack (something similar to Dear ImGui's approach)
+
+void gl_draw_char(int16_t x, int16_t y, const char ascii_char, font_t* font, uint16_t color)
+{
+
+}
+
+void gl_draw_text(int16_t x, int16_t y, const char* string, font_t* font, uint16_t color)
+{
+	char* p = (char*)string;
+
+	int16_t current_x = x;
+	int16_t current_y = y;
+
+	while (*p != '\0')
+	{
+		if (*p == '\n' || current_x + font->width >= frame_width)
+		{
+			current_x = x;
+			current_y += font->height;
+		}
+
+		gl_draw_char(current_x, current_y, *p++, font, color);
+
+		current_x += font->width;
+	}
+}
+
 
 
 #endif
