@@ -1,0 +1,3 @@
+C:/Users/frane/source/repos/pico_projects/gl/build/pioasm/CMakeFiles/pioasm.dir
+C:/Users/frane/source/repos/pico_projects/gl/build/pioasm/CMakeFiles/edit_cache.dir
+C:/Users/frane/source/repos/pico_projects/gl/build/pioasm/CMakeFiles/rebuild_cache.dir
