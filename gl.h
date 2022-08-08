@@ -23,48 +23,48 @@ static size_t       frame_buffer_size;
 
 uint16_t rgb_u16(uint8_t r, uint8_t g, uint8_t b)
 {
-    uint16_t color = 0x0000;
+	uint16_t color = 0x0000;
 
 	color = ((r & 0xf8) << 8) | ((g & 0xfc) << 3) | ((b & 0xf8) >> 3);
-    color = ((color & 0x00ff) << 8) | ((color & 0xff00) >> 8); // rev16
+	color = ((color & 0x00ff) << 8) | ((color & 0xff00) >> 8); // rev16
 
-    return color;
+	return color;
 }
 
 int gl_init(uint16_t w, uint16_t h)
 {
-    frame_width = w;
-    frame_height = h;
-    frame_buffer_size = (size_t)(w * h * sizeof(uint16_t));
-    frame_buffer = (uint16_t*)malloc(frame_buffer_size);
+	frame_width = w;
+	frame_height = h;
+	frame_buffer_size = (size_t)(w * h * sizeof(uint16_t));
+	frame_buffer = (uint16_t*)malloc(frame_buffer_size);
 
-    if (frame_buffer == NULL)
-    {
-        return 0;
-    }
+	if (frame_buffer == NULL)
+	{
+		return 0;
+	}
 
-    return 1;
+	return 1;
 }
 
 void gl_shutdown()
 {
-    free(frame_buffer);
+	free(frame_buffer);
 
-    frame_buffer = NULL;
+	frame_buffer = NULL;
 
 	frame_width = 0;
-    frame_height = 0;
-    frame_buffer_size = 0;
+	frame_height = 0;
+	frame_buffer_size = 0;
 }
 
 void gl_draw_pixel(int16_t x, int16_t y, uint16_t color)
 {
-    if (x >= frame_width || y >= frame_height || x < 0 || y < 0)
-    {
-        return;
-    }
+	if (x >= frame_width || y >= frame_height || x < 0 || y < 0)
+	{
+		return;
+	}
 
-    frame_buffer[x+y*frame_width] = color;
+	frame_buffer[x+y*frame_width] = color;
 }
 
 void gl_clear(uint16_t color = 0x0000)
@@ -81,7 +81,7 @@ void gl_clear(uint16_t color = 0x0000)
 // bresenhams line algorithm (https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm)
 void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
-    int dx = abs(x1 - x0);
+	int dx = abs(x1 - x0);
 	int dy = -abs(y1 - y0);
 
 	int sx = (x0 < x1) ? 1 : -1;

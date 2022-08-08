@@ -27,7 +27,7 @@ static void lcd_data_8bit(uint8_t data)
 static void lcd_data_16bit(uint16_t data)
 {
     lcd_data_8bit((uint8_t)(data >> 8));
-	lcd_data_8bit((uint8_t)(data));
+    lcd_data_8bit((uint8_t)(data));
 }
 
 static void lcd_reset()
@@ -78,25 +78,25 @@ void lcd_init()
 
 static void lcd_set_window(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 {
-	lcd_cmd(LCD_CASET);
-	lcd_data_16bit(x + LCD_OFFSET_X);
-	lcd_data_16bit(x + width - 1 + LCD_OFFSET_X);
- 
-	lcd_cmd(LCD_RASET);
-	lcd_data_16bit(y + LCD_OFFSET_Y);
-	lcd_data_16bit(y + height - 1 + LCD_OFFSET_Y);
+    lcd_cmd(LCD_CASET);
+    lcd_data_16bit(x + LCD_OFFSET_X);
+    lcd_data_16bit(x + width - 1 + LCD_OFFSET_X);
+
+    lcd_cmd(LCD_RASET);
+    lcd_data_16bit(y + LCD_OFFSET_Y);
+    lcd_data_16bit(y + height - 1 + LCD_OFFSET_Y);
 }
 
 void lcd_flush(uint16_t* buffer, size_t size, uint16_t width, uint16_t height)
 {
     lcd_set_window(0, 0, width, height);
-	lcd_cmd(LCD_RAMWR);
+    lcd_cmd(LCD_RAMWR);
 
     gpio_put(LCD_DC_PIN, 1);
     gpio_put(LCD_CS_PIN, 0);
-    
+
     spi_write_blocking(SPI_PORT, (uint8_t*)buffer, size);
-    
+
     gpio_put(LCD_CS_PIN, 1);
 }
 
