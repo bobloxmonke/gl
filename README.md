@@ -20,7 +20,7 @@ spi_init(SPI_PORT, 10000 * 1000);                                               
 lcd_init();                                                                         // initialize the display
 
 gl_init(LCD_WIDTH, LCD_HEIGHT);                                                     // graphics library initialization.
-                                                                                    // make sure to call **gl_init** ==before== drawing and sending anything to the display.
+                                                                                    // make sure to call gl_init before drawing and sending anything to the display.
 gl_clear();                                                                         // clear the frame buffer. default clear color is black
 
 gl_draw_line(8, 8, 128, 16, rgb_u16(255, 255, 0));                                  // draw a yellow line from [8, 8] to [128, 16].
