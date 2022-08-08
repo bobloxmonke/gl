@@ -6,23 +6,13 @@
 #include <stdint.h>
 #include <string.h>
 
-// #include "utils.h"
+#include "utils.h"
 #include "fonts.h"
 
 static uint16_t*    frame_buffer;
 static uint16_t     frame_width;
 static uint16_t     frame_height;
 static size_t       frame_buffer_size;
-
-uint16_t rgb_u16(uint8_t r, uint8_t g, uint8_t b)
-{
-	uint16_t color = 0x0000;
-
-	color = ((r & 0xf8) << 8) | ((g & 0xfc) << 3) | ((b & 0xf8) >> 3);
-	color = ((color & 0x00ff) << 8) | ((color & 0xff00) >> 8); // rev16
-
-	return color;
-}
 
 int gl_init(uint16_t w, uint16_t h)
 {
@@ -185,19 +175,15 @@ void gl_invert_bitmap(uint8_t* buffer, size_t size)
 
 // TODO: implement a font stack (something similar to Dear ImGui's approach)
 
-void gl_draw_char(int16_t x, int16_t y, const char ascii_char, const font_t* font, uint16_t color)
+void gl_draw_char(int16_t x, int16_t y, char ascii_char, const font_t* font, uint16_t color)
 {
 	if ((x > frame_width) || (y > frame_height) || (x + font->width < 0) || (y + font->width < 0))
 	{
 		return;
 	}
 
-	if (ascii_char < 32 || ascii_char > 126)
-	{
-		return;
-	}
-
-	uint32_t offset = (ascii_char - ' ') * font->height * ((font->width >> 3) + !!(font->width % 8));
+	uint32_t bytes_spacing = font->height * (font->width >> 3 + !!(font->width % 8)); // version of "font->height * (font->width / 8 + ((font->width % 8) ? 1 : 0))" without division and if statement
+	uint32_t offset = (ascii_char - ' ') * bytes_spacing;
 
 	gl_draw_bitmap(x, y, font->width, font->height, &font->data[offset], color);
 }
@@ -216,10 +202,24 @@ void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, 
 
 	while (*p != '\0')
 	{
-		if (*p == '\n' || current_x + font->width >= frame_width)
+		if (current_x + font->width >= frame_width)
 		{
 			current_x = x;
 			current_y += font->height;
+		}
+
+		if (*p == '\n')
+		{
+			current_x = x;
+			current_y += font->height;
+
+			p++;
+		}
+		else if (*p == '\t')
+		{
+			current_x += font->width * 3;
+
+			p++;
 		}
 
 		gl_draw_char(current_x, current_y, *p, font, color);
