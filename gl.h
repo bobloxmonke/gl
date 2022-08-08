@@ -146,8 +146,8 @@ void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t*
 	{
 		for (uint16_t i = 0; i < w; i++)
 		{
-			//if (*p & (0x80 >> (i % 8)))
-			if (*p & (1 << (i % 8)))
+			if (*p & (0x80 >> (i % 8)))
+			//if (*p & (1 << (i % 8)))
 			{
 				gl_draw_pixel(x + i, y + j, color);
 			}
