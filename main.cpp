@@ -19,7 +19,7 @@ int main()
     
 
     // send the buffer to the lcd over spi
-    lcd_flush(frame_buffer, frame_buffer_size, frame_width, frame_height);
+    lcd_flush(gl_frame_buffer, gl_frame_buffer_size, gl_frame_width, gl_frame_height);
 
     return 0;
 }
