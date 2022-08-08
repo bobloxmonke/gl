@@ -14,7 +14,7 @@
 here is a small snippet of code to get started with
 
 ```c
-spi_init(SPI_PORT, 10000 * 1000);                                                  // initialize spi communication with 10000 KHz frequency
+spi_init(SPI_PORT, 10000 * 1000);                                                   // initialize spi communication with 10000 KHz frequency
 
 lcd_init();                                                                         // initialize the display
 
