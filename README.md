@@ -13,7 +13,8 @@
 ## usage
 here is a small snippet of code to get started with
 
-`spi_init(SPI_PORT, 10000 * 1000);                                                  // initialize spi communication with 10000 KHz frequency
+```c
+spi_init(SPI_PORT, 10000 * 1000);                                                  // initialize spi communication with 10000 KHz frequency
 
 lcd_init();                                                                         // initialize the display
 
@@ -28,6 +29,7 @@ gl_draw_bitmap(8, 48, 7, 7, bitmap, 0x0f70);                                    
 lcd_flush(gl_frame_buffer, gl_frame_buffer_size, gl_frame_width, gl_frame_height);  // send the frame buffer to the display over spi.
                                                                                     // note that 'gl' and 'lcd' are separate libraries and doesnt share any variables or functions
 the code above produces following output:
-![image](https://user-images.githubusercontent.com/84726280/183487682-449a08aa-5aa6-4634-9832-da0a928b95fd.png)
+<br>
+![result](https://user-images.githubusercontent.com/84726280/183487682-449a08aa-5aa6-4634-9832-da0a928b95fd.png)
 
 for more info contact me on discord - **mr boblox#4444**
