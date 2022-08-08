@@ -2,6 +2,7 @@
 *very simple graphics library for raspberry pi pico with support for ST7735 and ST7789 LCD controllers*
 
 ## features
+- C11 compatible
 - header-only
 - designed for embedded systems
 - 16-bit RGB color support
