@@ -7,14 +7,7 @@
 #include <string.h>
 
 // #include "utils.h"
-
-struct font_t
-{
-    uint8_t* font_data;
-
-    uint16_t width;
-    uint16_t height;
-};
+#include "fonts.h"
 
 static uint16_t*    frame_buffer;
 static uint16_t     frame_width;
@@ -124,7 +117,7 @@ void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color
 	}
 }
 
-void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* image)
+void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t* buffer)
 {
 	for (int j = y; j < y+h; j++)
 	{
@@ -135,22 +128,61 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* image
 				continue;
 			}
 
-			frame_buffer[i+j*frame_width] = image[(i-x)+(j-y)*w];
+			frame_buffer[i+j*frame_width] = buffer[(i-x)+(j-y)*w];
 		}
+	}
+}
+
+void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* buffer, uint16_t color)
+{
+	const uint8_t* ptr = buffer;
+
+	for (uint16_t j = 0; j < h; j++)
+	{
+		for (uint16_t i = 0; i < w; i++)
+		{
+			if (*ptr & (0x80 >> (i % 8)))
+			//if (*ptr & (1 << (i % 8)))
+			{
+				gl_draw_pixel(x + i, y + j, color);
+			}
+
+			if (i % 8 == 7)
+			{
+				ptr++;
+			}
+		}
+
+		if (w % 8 != 0)
+		{
+			ptr++;
+		}
+	}
+}
+
+void gl_invert_bitmap(uint8_t* buffer, size_t size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		buffer[i] = ~buffer[i];
 	}
 }
 
 // TODO: implement a font stack (something similar to Dear ImGui's approach)
 
-void gl_draw_char(int16_t x, int16_t y, const char ascii_char, font_t* font, uint16_t color)
+void gl_draw_char(int16_t x, int16_t y, const char ascii_char, const font_t* font, uint16_t color)
 {
 	if (ascii_char < 32 || ascii_char > 126)
 	{
 		return;
 	}
+
+	uint32_t offset = (ascii_char - ' ') * font->height * ((font->width >> 3) + !!(font->width % 8));
+
+	gl_draw_bitmap(x, y, font->width, font->height, &font->data[offset], color);
 }
 
-void gl_draw_text(int16_t x, int16_t y, const char* string, font_t* font, uint16_t color)
+void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, uint16_t color)
 {
 	char* p = (char*)string;
 
