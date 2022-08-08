@@ -52,7 +52,7 @@ void gl_shutdown()
 
 void gl_draw_pixel(int16_t x, int16_t y, uint16_t color)
 {
-	if (x >= frame_width || y >= frame_height || x < 0 || y < 0)
+	if ((x >= frame_width) || (y >= frame_height) || (x < 0) || (y < 0))
 	{
 		return;
 	}
@@ -74,6 +74,11 @@ void gl_clear(uint16_t color = 0x0000)
 // bresenhams line algorithm (https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm)
 void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
+	if ((x0 > frame_width && x1 > frame_width) || (y0 > frame_height && y1 > frame_height) || (x0 < 0 && x1 < 0) || (y0 < 0 && y1 < 0))
+	{
+		return;
+	}
+
 	int dx = abs(x1 - x0);
 	int dy = -abs(y1 - y0);
 
@@ -119,6 +124,11 @@ void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color
 
 void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t* buffer)
 {
+	if ((x > frame_width) || (h > frame_height) || (x + w < 0) || (y + h < 0))
+	{
+		return;
+	}
+
 	for (int j = y; j < y+h; j++)
 	{
 		for (int i = x; i < x+w; i++)
@@ -135,27 +145,32 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t*
 
 void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* buffer, uint16_t color)
 {
-	const uint8_t* ptr = buffer;
+	if ((x > frame_width) || (y > frame_height) || (x + w < 0) || (y + h < 0))
+	{
+		return;
+	}
+
+	const uint8_t* p = buffer;
 
 	for (uint16_t j = 0; j < h; j++)
 	{
 		for (uint16_t i = 0; i < w; i++)
 		{
-			if (*ptr & (0x80 >> (i % 8)))
-			//if (*ptr & (1 << (i % 8)))
+			if (*p & (0x80 >> (i % 8)))
+			//if (*p & (1 << (i % 8)))
 			{
 				gl_draw_pixel(x + i, y + j, color);
 			}
 
 			if (i % 8 == 7)
 			{
-				ptr++;
+				p++;
 			}
 		}
 
 		if (w % 8 != 0)
 		{
-			ptr++;
+			p++;
 		}
 	}
 }
@@ -172,6 +187,11 @@ void gl_invert_bitmap(uint8_t* buffer, size_t size)
 
 void gl_draw_char(int16_t x, int16_t y, const char ascii_char, const font_t* font, uint16_t color)
 {
+	if ((x > frame_width) || (y > frame_height) || (x + font->width < 0) || (y + font->width < 0))
+	{
+		return;
+	}
+
 	if (ascii_char < 32 || ascii_char > 126)
 	{
 		return;
@@ -184,7 +204,12 @@ void gl_draw_char(int16_t x, int16_t y, const char ascii_char, const font_t* fon
 
 void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, uint16_t color)
 {
-	char* p = (char*)string;
+	if ((x > frame_width) || (y > frame_height))
+	{
+		return;
+	}
+
+	const char* p = string;
 
 	int16_t current_x = x;
 	int16_t current_y = y;
@@ -197,8 +222,9 @@ void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, 
 			current_y += font->height;
 		}
 
-		gl_draw_char(current_x, current_y, *p++, font, color);
+		gl_draw_char(current_x, current_y, *p, font, color);
 
+		p++;
 		current_x += font->width;
 	}
 }
