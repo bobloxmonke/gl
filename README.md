@@ -32,6 +32,6 @@ lcd_flush(gl_frame_buffer, gl_frame_buffer_size, gl_frame_width, gl_frame_height
 <br>
 the code above produces following output:
 <br>
-![result](https://user-images.githubusercontent.com/84726280/183487682-449a08aa-5aa6-4634-9832-da0a928b95fd.png)
+![image](https://user-images.githubusercontent.com/84726280/183487682-449a08aa-5aa6-4634-9832-da0a928b95fd.png)
 
 for more info contact me on discord - **mr boblox#4444**
