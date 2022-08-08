@@ -16,8 +16,6 @@ int main()
 
     gl_clear();
 
-    
-
     // send the buffer to the lcd over spi
     lcd_flush(gl_frame_buffer, gl_frame_buffer_size, gl_frame_width, gl_frame_height);
 

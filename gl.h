@@ -133,6 +133,9 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t*
 	}
 }
 
+// FIXME: memory endianness is fucking shit uppp
+// is it the font issue? idk
+
 void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* buffer, uint16_t color)
 {
 	if ((x > gl_frame_width) || (y > gl_frame_height) || (x + w < 0) || (y + h < 0))
@@ -146,8 +149,8 @@ void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t*
 	{
 		for (uint16_t i = 0; i < w; i++)
 		{
-			//if (*p & (0x80 >> (i % 8)))
-			if (*p & (1 << (i % 8)))
+			if (*p & (0x80 >> (i % 8)))
+			//if (*p & (1 << (i % 8)))
 			{
 				gl_draw_pixel(x + i, y + j, color);
 			}
@@ -182,7 +185,7 @@ void gl_draw_char(int16_t x, int16_t y, char ascii_char, const font_t* font, uin
 		return;
 	}
 
-	uint32_t bytes_spacing = font->height * (font->width >> 3 + !!(font->width % 8)); // version of "font->height * (font->width / 8 + ((font->width % 8) ? 1 : 0))" without division and if statement
+	uint32_t bytes_spacing = font->height * ((font->width >> 3) + !!(font->width % 8)); // version of "font->height * (font->width / 8 + ((font->width % 8) ? 1 : 0))" without division and if statement
 	uint32_t offset = (ascii_char - ' ') * bytes_spacing;
 
 	gl_draw_bitmap(x, y, font->width, font->height, &font->data[offset], color);
