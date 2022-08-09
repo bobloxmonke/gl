@@ -260,16 +260,10 @@ void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, 
 			current_y += font->height;
 		}
 
-		if (*p == '\n')
+		while (*p == '\n')
 		{
 			current_x = x;
 			current_y += font->height;
-
-			p++;
-		}
-		else if (*p == '\t')
-		{
-			current_x += font->width * 3;
 
 			p++;
 		}
