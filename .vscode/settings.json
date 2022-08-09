@@ -16,5 +16,5 @@
         "cstdlib": "cpp",
         "string": "cpp"
     },
-    "cmake.sourceDirectory": "${workspaceFolder}/src"
+    "cmake.sourceDirectory": "${workspaceFolder}/gl"
 }
