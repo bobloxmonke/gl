@@ -112,9 +112,38 @@ void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color
 	}
 }
 
+void gl_draw_rect_filled(int16_t x_min, int16_t y_min, int16_t x_max, int16_t y_max, uint16_t color)
+{
+	if ((x_min > gl_frame_width) || (y_min > gl_frame_height) || (x_max < 0) || (y_max < 0) || (x_min > x_max) || (y_min > y_max))
+	{
+		return;
+	}
+
+	for (int16_t y = y_min; y < y_max; y++)
+	{
+		for (int16_t x = x_min; x < x_max; x++)
+		{
+			gl_draw_pixel(x, y, color);
+		}
+	}
+}
+
+void gl_draw_rect(int16_t x_min, int16_t y_min, int16_t x_max, int16_t y_max, uint16_t color)
+{
+	if ((x_min > gl_frame_width) || (y_min > gl_frame_height) || (x_max < 0) || (y_max < 0))
+	{
+		return;
+	}
+
+	gl_draw_line(x_min, y_min, x_max, y_min, color);
+	gl_draw_line(x_min, y_min, x_min, y_max, color);
+	gl_draw_line(x_max, y_max, x_max, y_min, color);
+	gl_draw_line(x_max, y_max, x_min, y_max, color);
+}
+
 void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t* buffer)
 {
-	if ((x > gl_frame_width) || (h > gl_frame_height) || (x + w < 0) || (y + h < 0))
+	if ((x > gl_frame_width) || (y > gl_frame_height) || (x + w < 0) || (y + h < 0))
 	{
 		return;
 	}
@@ -136,45 +165,45 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t*
 // FIXME: memory endianness is fucking shit uppp
 // is it the font issue? idk
 
-void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* buffer, uint16_t color)
-{
-	if ((x > gl_frame_width) || (y > gl_frame_height) || (x + w < 0) || (y + h < 0))
-	{
-		return;
-	}
+//void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* buffer, uint16_t color)
+//{
+//	if ((x > gl_frame_width) || (y > gl_frame_height) || (x + w < 0) || (y + h < 0))
+//	{
+//		return;
+//	}
+//
+//	const uint8_t* p = buffer;
+//
+//	for (uint16_t j = 0; j < h; j++)
+//	{
+//		for (uint16_t i = 0; i < w; i++)
+//		{
+//			if (*p & (0x80 >> (i % 8)))
+//			//if (*p & (1 << (i % 8)))
+//			{
+//				gl_draw_pixel(x + i, y + j, color);
+//			}
+//
+//			if (i % 8 == 7)
+//			{
+//				p++;
+//			}
+//		}
+//
+//		if (w % 8 != 0)
+//		{
+//			p++;
+//		}
+//	}
+//}
 
-	const uint8_t* p = buffer;
-
-	for (uint16_t j = 0; j < h; j++)
-	{
-		for (uint16_t i = 0; i < w; i++)
-		{
-			if (*p & (0x80 >> (i % 8)))
-			//if (*p & (1 << (i % 8)))
-			{
-				gl_draw_pixel(x + i, y + j, color);
-			}
-
-			if (i % 8 == 7)
-			{
-				p++;
-			}
-		}
-
-		if (w % 8 != 0)
-		{
-			p++;
-		}
-	}
-}
-
-void gl_invert_bitmap(uint8_t* buffer, size_t size)
-{
-	for (int i = 0; i < size; i++)
-	{
-		buffer[i] = ~buffer[i];
-	}
-}
+//void gl_invert_bitmap(uint8_t* buffer, size_t size)
+//{
+//	for (int i = 0; i < size; i++)
+//	{
+//		buffer[i] = ~buffer[i];
+//	}
+//}
 
 // TODO: implement a font stack (something similar to Dear ImGui's approach)
 
@@ -185,10 +214,30 @@ void gl_draw_char(int16_t x, int16_t y, char ascii_char, const font_t* font, uin
 		return;
 	}
 
-	uint32_t bytes_spacing = font->height * ((font->width >> 3) + !!(font->width % 8)); // version of "font->height * (font->width / 8 + ((font->width % 8) ? 1 : 0))" without division and if statement
-	uint32_t offset = (ascii_char - ' ') * bytes_spacing;
+	uint32_t offset = (ascii_char - ' ') * font->height * ((font->width >> 3) + !!(font->width % 8));;
 
-	gl_draw_bitmap(x, y, font->width, font->height, &font->data[offset], color);
+	const uint8_t* p = &font->data[offset];
+
+	for (uint16_t j = 0; j < font->height; j++)
+	{
+		for (uint16_t i = 0; i < font->width; i++)
+		{
+			if (*p & (0x80 >> (i % 8)))
+			{
+				gl_draw_pixel(x + i, y + j, color);
+			}
+
+			if (i % 8 == 7)
+			{
+				p++;
+			}
+		}
+
+		if (font->width % 8 != 0)
+		{
+			p++;
+		}
+	}
 }
 
 void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, uint16_t color)
