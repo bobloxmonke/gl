@@ -25,13 +25,12 @@ gl_clear();                                                                     
 
 gl_draw_line(8, 8, 128, 16, rgb_u16(255, 255, 0));                                  // render a yellow line from [8, 8] to [128, 16].
 gl_draw_text(8, 16, "hello world!\nnew line", &font8x14, rgb_u16(255, 255, 255));   // render a string at [8, 16] using 8px by 14px font
-gl_draw_bitmap(8, 48, 7, 7, bitmap, 0x0f70);                                        // render a bitmap at [8, 48] with 7px width and 7px height. here we are passing raw 16 bit color
 
 lcd_flush(gl_frame_buffer, gl_frame_buffer_size, gl_frame_width, gl_frame_height);  // send the frame buffer to the display over spi.
                                                                                     // note that 'gl' and 'lcd' are separate libraries and dont share any variables or functions
 ```
 
 output:
-<br>![image](https://user-images.githubusercontent.com/84726280/183489179-5ad3a943-2f2a-4dd3-b15b-2c402b8633df.png)
+<br>![image](https://user-images.githubusercontent.com/84726280/183516822-5bc1961a-5617-4b8c-9abb-c74217a303b9.png)
 
 for more info contact me on discord \- **mr boblox#4444**
