@@ -15,5 +15,6 @@
         "type_traits": "cpp",
         "cstdlib": "cpp",
         "string": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/src"
 }
