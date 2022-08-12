@@ -207,37 +207,34 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t*
 
 // TODO: implement a font stack (something similar to Dear ImGui's approach)
 
-void gl_draw_char(int16_t x, int16_t y, char ascii_char, const font_t* font, uint16_t color)
+void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* bitmap, uint16_t fg_color, uint16_t bg_color = 0x0000)
+{
+	const uint8_t* p = bitmap;
+
+	int16_t byte_width = (w + 7) / 8;
+	uint8_t b = 0;
+
+	for (uint16_t j = 0; j < h; j++)
+	{
+		for (uint16_t i = 0; i < w; i++)
+		{
+			b = (i & 7) ? (b << 1) : (p[(i / 8) + j * byte_width]); // maybe use rsh 3 instead of division. idk if gcc-arm compiler optimizes division like this?
+
+			gl_draw_pixel(x + i, y + j, (b & 0x80) ? fg_color : bg_color);
+		}
+	}
+}
+
+void gl_draw_char(int16_t x, int16_t y, char ascii_char, const font_t* font, uint16_t fg_color, uint16_t bg_color = 0x0000)
 {
 	if ((x > gl_frame_width) || (y > gl_frame_height) || (x + font->width < 0) || (y + font->width < 0))
 	{
 		return;
 	}
 
-	uint32_t offset = (ascii_char - ' ') * font->height * ((font->width >> 3) + !!(font->width % 8));;
+	uint32_t offset = (ascii_char - ' ') * font->height * ((font->width >> 3) + !!(font->width % 8));
 
-	const uint8_t* p = &font->data[offset];
-
-	for (uint16_t j = 0; j < font->height; j++)
-	{
-		for (uint16_t i = 0; i < font->width; i++)
-		{
-			if (*p & (0x80 >> (i % 8)))
-			{
-				gl_draw_pixel(x + i, y + j, color);
-			}
-
-			if (i % 8 == 7)
-			{
-				p++;
-			}
-		}
-
-		if (font->width % 8 != 0)
-		{
-			p++;
-		}
-	}
+	gl_draw_bitmap(x, y, font->width, font->height, &font->data[offset], fg_color, bg_color);
 }
 
 void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, uint16_t color)
@@ -270,8 +267,8 @@ void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, 
 
 		gl_draw_char(current_x, current_y, *p, font, color);
 
-		p++;
 		current_x += font->width;
+		p++;
 	}
 }
 
