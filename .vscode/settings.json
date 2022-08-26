@@ -14,7 +14,8 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "cstdlib": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "stack": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}/gl"
 }

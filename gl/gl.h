@@ -61,6 +61,32 @@ void gl_clear(uint16_t color = 0x0000)
 	}
 }
 
+void gl_draw_vline_fast(int16_t x0, int16_t y0, uint16_t y1, uint16_t color)
+{
+	if ((y0 > gl_frame_height) || (x0 < 0) || (y0 < 0) || (y0 > y1))
+	{
+		return;
+	}
+
+	for (int16_t y = y0; y < y1; y++)
+	{
+		gl_draw_pixel(x0, y, color);
+	}
+}
+
+void gl_draw_hline_fast(uint16_t y0, int16_t x0, int16_t x1, uint16_t color)
+{
+	if ((x0 > gl_frame_width) || (y0 < 0) || (x0 < 0) || (x0 > x1))
+	{
+		return;
+	}
+
+	for (int16_t x = x0; x < x1; x++)
+	{
+		gl_draw_pixel(x, y0, color);
+	}
+}
+
 // bresenhams line algorithm (https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm)
 void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
@@ -112,33 +138,111 @@ void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color
 	}
 }
 
-void gl_draw_rect_filled(int16_t x_min, int16_t y_min, int16_t x_max, int16_t y_max, uint16_t color)
+void gl_draw_circle(int16_t xc, int16_t yc, uint16_t r, uint16_t color)
 {
-	if ((x_min > gl_frame_width) || (y_min > gl_frame_height) || (x_max < 0) || (y_max < 0) || (x_min > x_max) || (y_min > y_max))
+	if ((r == 0) || (xc - r > gl_frame_width) || (xc + r < 0) || (yc - r > gl_frame_height) || (yc + r < 0))
 	{
 		return;
 	}
 
-	for (int16_t y = y_min; y < y_max; y++)
+	int16_t x = 0;
+	int16_t y = r;
+	int16_t d = 3 - (2 * r);
+
+	while (y >= x)
 	{
-		for (int16_t x = x_min; x < x_max; x++)
+		gl_draw_pixel(xc - x, yc - y, color);
+		gl_draw_pixel(xc - y, yc - x, color);
+		gl_draw_pixel(xc + y, yc - x, color);
+		gl_draw_pixel(xc + x, yc - y, color);
+		gl_draw_pixel(xc - x, yc + y, color);
+		gl_draw_pixel(xc - y, yc + x, color);
+		gl_draw_pixel(xc + y, yc + x, color);
+		gl_draw_pixel(xc + x, yc + y, color);
+
+		if (d > 0)
+		{
+			d += 4 * (x - y) + 10;
+			y--;
+		}
+		else
+		{
+			d += 4 * x + 6;
+		}
+
+		x++;
+	}
+}
+
+void gl_draw_circle_filled(int16_t xc, int16_t yc, uint16_t r, uint16_t color)
+{
+	if ((r == 0) || (xc - r > gl_frame_width) || (xc + r < 0) || (yc - r > gl_frame_height) || (yc + r < 0))
+	{
+		return;
+	}
+
+	int16_t x = 0;
+	int16_t y = r;
+	int16_t d = 3 - 2 * r;
+
+	while (y >= x)
+	{
+		gl_draw_hline_fast(yc - y, xc - x, xc + x, color);
+		gl_draw_hline_fast(yc - x, xc - y, xc + y, color);
+		gl_draw_hline_fast(yc + y, xc - x, xc + x, color);
+		gl_draw_hline_fast(yc + x, xc - y, xc + y, color);
+
+		if (d > 0)
+		{
+			d += 4 * (x - y) + 10;
+			y--;
+		}
+		else
+		{
+			d += 4 * x + 6;
+		}
+
+		x++;
+	}
+};
+
+void gl_draw_rect(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+{
+	if ((x0 > gl_frame_width) || (y0 > gl_frame_height) || (x1 < 0) || (y1 < 0) || (x0 > x1) || (y0 > y1))
+	{
+		return;
+	}
+
+	gl_draw_line(x0, y0, x1, y0, color);
+	gl_draw_line(x0, y0, x0, y1, color);
+	gl_draw_line(x1, y1, x1, y0, color);
+	gl_draw_line(x1, y1, x0, y1, color);
+}
+
+void gl_draw_rect_filled(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+{
+	if ((x0 > gl_frame_width) || (y0 > gl_frame_height) || (x1 < 0) || (y1 < 0) || (x0 > x1) || (y0 > y1))
+	{
+		return;
+	}
+
+	for (int16_t y = y0; y < y1; y++)
+	{
+		for (int16_t x = x0; x < x1; x++)
 		{
 			gl_draw_pixel(x, y, color);
 		}
 	}
 }
 
-void gl_draw_rect(int16_t x_min, int16_t y_min, int16_t x_max, int16_t y_max, uint16_t color)
+void gl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 {
-	if ((x_min > gl_frame_width) || (y_min > gl_frame_height) || (x_max < 0) || (y_max < 0))
-	{
-		return;
-	}
 
-	gl_draw_line(x_min, y_min, x_max, y_min, color);
-	gl_draw_line(x_min, y_min, x_min, y_max, color);
-	gl_draw_line(x_max, y_max, x_max, y_min, color);
-	gl_draw_line(x_max, y_max, x_min, y_max, color);
+}
+
+void gl_draw_triangle_filled(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
+{
+
 }
 
 void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t* buffer)
@@ -162,67 +266,60 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t*
 	}
 }
 
-// FIXME: memory endianness is fucking shit uppp
-// is it the font issue? idk
+void gl_invert_bitmap(uint8_t* buffer, size_t size)
+{
+	if (buffer == NULL)
+	{
+		return;
+	}
 
-//void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* buffer, uint16_t color)
-//{
-//	if ((x > gl_frame_width) || (y > gl_frame_height) || (x + w < 0) || (y + h < 0))
-//	{
-//		return;
-//	}
-//
-//	const uint8_t* p = buffer;
-//
-//	for (uint16_t j = 0; j < h; j++)
-//	{
-//		for (uint16_t i = 0; i < w; i++)
-//		{
-//			if (*p & (0x80 >> (i % 8)))
-//			//if (*p & (1 << (i % 8)))
-//			{
-//				gl_draw_pixel(x + i, y + j, color);
-//			}
-//
-//			if (i % 8 == 7)
-//			{
-//				p++;
-//			}
-//		}
-//
-//		if (w % 8 != 0)
-//		{
-//			p++;
-//		}
-//	}
-//}
+	for (int i = 0; i < size; i++)
+	{
+		buffer[i] = ~buffer[i];
+	}
+}
 
-//void gl_invert_bitmap(uint8_t* buffer, size_t size)
-//{
-//	for (int i = 0; i < size; i++)
-//	{
-//		buffer[i] = ~buffer[i];
-//	}
-//}
-
-// TODO: implement a font stack (something similar to Dear ImGui's approach)
-
+// TODO: fucking fix this garbage
 void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* bitmap, uint16_t fg_color, uint16_t bg_color = 0x0000)
 {
 	const uint8_t* p = bitmap;
+	const uint16_t byte_width = (w + 7) / 8;
 
-	int16_t byte_width = (w + 7) / 8;
 	uint8_t b = 0;
 
 	for (uint16_t j = 0; j < h; j++)
 	{
 		for (uint16_t i = 0; i < w; i++)
 		{
-			b = (i & 7) ? (b << 1) : (p[(i / 8) + j * byte_width]); // maybe use rsh 3 instead of division. idk if gcc-arm compiler optimizes division like this?
+			if (i & 7) // i % 8 != 0
+			{
+				b = b << 1;
+			}
+			else
+			{
+				b = p[(i / 8) + j * byte_width]; // maybe use rsh 3 instead of division. idk if gcc-arm compiler optimizes division like this?
+			}
 
-			gl_draw_pixel(x + i, y + j, (b & 0x80) ? fg_color : bg_color);
+			if (b & 0x80)
+			{
+				gl_draw_pixel(x + i, y + j, fg_color);
+			}
+			else
+			{
+				gl_draw_pixel(x + i, y + j, bg_color);
+			}
 		}
 	}
+}
+
+void push_font(const font_t* font)
+{
+
+}
+
+void pop_font()
+{
+
 }
 
 void gl_draw_char(int16_t x, int16_t y, char ascii_char, const font_t* font, uint16_t fg_color, uint16_t bg_color = 0x0000)
@@ -232,12 +329,12 @@ void gl_draw_char(int16_t x, int16_t y, char ascii_char, const font_t* font, uin
 		return;
 	}
 
-	uint32_t offset = (ascii_char - ' ') * font->height * ((font->width >> 3) + !!(font->width % 8));
+	uint32_t offset = (ascii_char - ' ') * font->height * ((font->width / 8) + !!(font->width % 8));
 
 	gl_draw_bitmap(x, y, font->width, font->height, &font->data[offset], fg_color, bg_color);
 }
 
-void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, uint16_t color)
+void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, uint16_t fg_color, uint16_t bg_color = 0x0000)
 {
 	if ((x > gl_frame_width) || (y > gl_frame_height))
 	{
@@ -265,11 +362,44 @@ void gl_draw_text(int16_t x, int16_t y, const char* string, const font_t* font, 
 			p++;
 		}
 
-		gl_draw_char(current_x, current_y, *p, font, color);
+		gl_draw_char(current_x, current_y, *p, font, fg_color, bg_color);
 
 		current_x += font->width;
 		p++;
 	}
+}
+
+void gl_text_size(const char* text, const font_t* font, uint16_t* out_w, uint16_t* out_h)
+{
+	uint16_t w = 0;
+	uint16_t h = font->height;
+
+	uint16_t max_w = 0;
+
+	const char* p = text;
+
+	while (*p != '\0')
+	{
+		while (*p == '\n')
+		{
+			w = 0;
+			h += font->height;
+
+			p++;
+		}
+
+		w += font->width;
+
+		if (w > max_w)
+		{
+			max_w = w;
+		}
+
+		p++;
+	}
+
+	*out_w = max_w;
+	*out_h = h;
 }
 
 

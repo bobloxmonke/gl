@@ -6,7 +6,7 @@
 // command: 00000001XXXXXXXX
 // data:    00000000XXXXXXXX
 #define CMD_FLAG            0x0100
-#define CMD(x)              ((x) | CMD_FLAG)
+#define CMD(x)              ((uint16_t)(x) | CMD_FLAG)
 
 
 static const uint16_t init_sequence[] = 
