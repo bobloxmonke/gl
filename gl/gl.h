@@ -68,7 +68,7 @@ void gl_draw_vline_fast(int16_t x0, int16_t y0, uint16_t y1, uint16_t color)
 		return;
 	}
 
-	for (int16_t y = y0; y < y1; y++)
+	for (int16_t y = y0; y <= y1; y++)
 	{
 		gl_draw_pixel(x0, y, color);
 	}
@@ -81,7 +81,7 @@ void gl_draw_hline_fast(uint16_t y0, int16_t x0, int16_t x1, uint16_t color)
 		return;
 	}
 
-	for (int16_t x = x0; x < x1; x++)
+	for (int16_t x = x0; x <= x1; x++)
 	{
 		gl_draw_pixel(x, y0, color);
 	}
@@ -183,7 +183,7 @@ void gl_draw_circle_filled(int16_t xc, int16_t yc, uint16_t r, uint16_t color)
 
 	int16_t x = 0;
 	int16_t y = r;
-	int16_t d = 3 - 2 * r;
+	int16_t d = 3 - (2 * r);
 
 	while (y >= x)
 	{
