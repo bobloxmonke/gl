@@ -16,10 +16,10 @@ static size_t       gl_frame_buffer_size;
 
 int gl_init(uint16_t w, uint16_t h)
 {
-	gl_frame_width = w;
-	gl_frame_height = h;
 	gl_frame_buffer_size = (size_t)(w * h * sizeof(uint16_t));
 	gl_frame_buffer = (uint16_t*)malloc(gl_frame_buffer_size);
+	gl_frame_width = w;
+	gl_frame_height = h;
 
 	if (gl_frame_buffer == NULL)
 	{
@@ -69,13 +69,13 @@ void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color
 		return;
 	}
 
-	int dx = abs(x1 - x0);
-	int dy = -abs(y1 - y0);
+	int16_t dx = abs(x1 - x0);
+	int16_t dy = -abs(y1 - y0);
 
-	int sx = (x0 < x1) ? 1 : -1;
-	int sy = (y0 < y1) ? 1 : -1;
+	int16_t sx = (x0 < x1) ? 1 : -1;
+	int16_t sy = (y0 < y1) ? 1 : -1;
 
-	int e = dx + dy;
+	int16_t e = dx + dy;
 
 	while (1)
 	{
@@ -86,7 +86,7 @@ void gl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color
 			break;
 		}
 
-		int e2 = e * 2;
+		int16_t e2 = e * 2;
 
 		if (e2 >= dy)
 		{
@@ -286,9 +286,9 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t*
 		return;
 	}
 
-	for (int j = y; j < y+h; j++)
+	for (int16_t j = y; j < y+h; j++)
 	{
-		for (int i = x; i < x+w; i++)
+		for (int16_t i = x; i < x+w; i++)
 		{
 			if (i >= gl_frame_width || j >= gl_frame_height || i < 0 || j < 0)
 			{
