@@ -34,3 +34,4 @@ output:
 <br>![result](https://user-images.githubusercontent.com/84726280/186960967-16ea1c9a-43bb-4d87-b630-04c922f1ed90.png)
 
 for more info contact me on discord \- **mr boblox#4444**
+3D support and ray tracing coming soom™️
