@@ -15,7 +15,20 @@
         "type_traits": "cpp",
         "cstdlib": "cpp",
         "string": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "atomic": "cpp",
+        "*.tcc": "cpp",
+        "concepts": "cpp",
+        "cstddef": "cpp",
+        "cwchar": "cpp",
+        "vector": "cpp",
+        "memory_resource": "cpp",
+        "random": "cpp",
+        "memory": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "typeinfo": "cpp",
+        "cstdio": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}/gl"
 }

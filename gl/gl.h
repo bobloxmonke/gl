@@ -271,9 +271,12 @@ void gl_draw_rect_filled(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_
 
 void gl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 {
-
+	gl_draw_line(x0, y0, x1, y1, color);
+	gl_draw_line(x1, y1, x2, y2, color);
+	gl_draw_line(x2, y2, x0, y0, color);
 }
 
+// TODO: implement this already -_- 
 void gl_draw_triangle_filled(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 {
 
@@ -300,6 +303,7 @@ void gl_draw_image(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint16_t*
 	}
 }
 
+// useless as fuck
 void gl_invert_bitmap(uint8_t* buffer, size_t size)
 {
 	if (buffer == NULL)
@@ -313,7 +317,7 @@ void gl_invert_bitmap(uint8_t* buffer, size_t size)
 	}
 }
 
-// TODO: fucking fix this garbage
+// TODO: fucking fix this garbage pls omg im dum,b as fuck XD!!
 void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t* bitmap, uint16_t fg_color, uint16_t bg_color = 0x0000)
 {
 	const uint8_t* p = bitmap;
@@ -346,6 +350,7 @@ void gl_draw_bitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, const uint8_t*
 	}
 }
 
+// C is ruining my life :cri:
 void push_font(const font_t* font)
 {
 
